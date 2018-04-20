@@ -12,7 +12,10 @@ import android.view.ViewGroup;
 
 import com.yjy.recyclerviewutils.adapter.SimpleAdapter;
 import com.yjy.recyclerviewutils.headerfooter.HeaderFooterDecorator;
+import com.yjy.recyclerviewutils.headerfooter.ViewCreator;
 import com.yjy.recyclerviewutilssample.databinding.FragmentRecyclerViewBinding;
+import com.yjy.recyclerviewutilssample.databinding.ViewFooterBinding;
+import com.yjy.recyclerviewutilssample.databinding.ViewHeaderBinding;
 import com.yjy.recyclerviewutilssample.databinding.ViewItemBinding;
 
 import java.util.ArrayList;
@@ -20,9 +23,9 @@ import java.util.UUID;
 
 public class RecyclerViewFragment extends Fragment {
 
-    private View mHeaderView = null;
+    private ViewCreator<ViewHeaderBinding> mHeaderView = null;
 
-    private View mFooterView = null;
+    private ViewCreator<ViewFooterBinding> mFooterView = null;
 
     private RecyclerView.LayoutManager mLayoutManager = null;
 
@@ -63,7 +66,7 @@ public class RecyclerViewFragment extends Fragment {
             }
         });
 
-        new HeaderFooterDecorator()
+        new HeaderFooterDecorator<ViewHeaderBinding, ViewFooterBinding>()
                 .setAdapter(mAdapter)
                 .setLayoutManager(mLayoutManager)
                 .setHeaderView(mHeaderView)
@@ -73,11 +76,11 @@ public class RecyclerViewFragment extends Fragment {
         return binding.getRoot();
     }
 
-    public void setHeaderView(View headerView) {
+    public void setHeaderView(ViewCreator<ViewHeaderBinding> headerView) {
         mHeaderView = headerView;
     }
 
-    public void setFooterView(View footerView) {
+    public void setFooterView(ViewCreator<ViewFooterBinding> footerView) {
         mFooterView = footerView;
     }
 
