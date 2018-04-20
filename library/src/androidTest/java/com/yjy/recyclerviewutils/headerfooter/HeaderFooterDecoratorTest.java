@@ -24,17 +24,32 @@ public class HeaderFooterDecoratorTest {
 
     @Test
     public void testIllegalArgumentException() {
-        assertIllegalArgumentException(() -> createCorrectDecorator()
-                .setAdapter(null)
-                .decorate(createRecyclerView()));
+        assertIllegalArgumentException(new Runnable() {
+            @Override
+            public void run() {
+                HeaderFooterDecoratorTest.this.createCorrectDecorator()
+                        .setAdapter(null)
+                        .decorate(HeaderFooterDecoratorTest.this.createRecyclerView());
+            }
+        });
 
-        assertIllegalArgumentException(() -> createCorrectDecorator()
-                .setLayoutManager(new LinearLayoutManager(mAppContext, LinearLayoutManager.HORIZONTAL, false))
-                .decorate(createRecyclerView()));
+        assertIllegalArgumentException(new Runnable() {
+            @Override
+            public void run() {
+                HeaderFooterDecoratorTest.this.createCorrectDecorator()
+                        .setLayoutManager(new LinearLayoutManager(mAppContext, LinearLayoutManager.HORIZONTAL, false))
+                        .decorate(HeaderFooterDecoratorTest.this.createRecyclerView());
+            }
+        });
 
-        assertIllegalArgumentException(() -> createCorrectDecorator()
-                .setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL))
-                .decorate(createRecyclerView()));
+        assertIllegalArgumentException(new Runnable() {
+            @Override
+            public void run() {
+                HeaderFooterDecoratorTest.this.createCorrectDecorator()
+                        .setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.HORIZONTAL))
+                        .decorate(HeaderFooterDecoratorTest.this.createRecyclerView());
+            }
+        });
     }
 
     private void assertIllegalArgumentException(Runnable runnable) {
