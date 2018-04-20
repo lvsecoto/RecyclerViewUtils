@@ -1,36 +1,36 @@
 package com.yjy.recyclerviewutils.headerfooter;
 
+import android.databinding.ViewDataBinding;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
-public class HeaderFooterDecorator {
+public class HeaderFooterDecorator<H extends ViewDataBinding, F extends ViewDataBinding> {
 
     private RecyclerView.Adapter mAdapter = null;
 
-    private View mHeaderView = null;
+    private ViewCreator<H> mHeaderView = null;
 
-    private View mFooterView = null;
+    private ViewCreator<F> mFooterView = null;
 
     private RecyclerView.LayoutManager mLayoutManager = null;
 
-    public HeaderFooterDecorator setAdapter(RecyclerView.Adapter adapter) {
+    public HeaderFooterDecorator<H,F> setAdapter(RecyclerView.Adapter adapter) {
         mAdapter = adapter;
         return this;
     }
 
-    public HeaderFooterDecorator setHeaderView(View headerView) {
+    public HeaderFooterDecorator<H,F> setHeaderView(ViewCreator<H> headerView) {
         mHeaderView = headerView;
         return this;
     }
 
-    public HeaderFooterDecorator setFooterView(View footerView) {
+    public HeaderFooterDecorator<H,F> setFooterView(ViewCreator<F> footerView) {
         mFooterView = footerView;
         return this;
     }
 
-    public HeaderFooterDecorator setLayoutManager(RecyclerView.LayoutManager layoutManager) {
+    public HeaderFooterDecorator<H,F> setLayoutManager(RecyclerView.LayoutManager layoutManager) {
         mLayoutManager = layoutManager;
         return this;
     }
@@ -46,7 +46,7 @@ public class HeaderFooterDecorator {
             throw new IllegalArgumentException("NOT support layout manager");
         }
 
-        AdapterWrapper adapterWrapper = new AdapterWrapper(mAdapter);
+        AdapterWrapper<H,F> adapterWrapper = new AdapterWrapper<>(mAdapter);
         adapterWrapper.setHeaderView(mHeaderView);
         adapterWrapper.setFooterView(mFooterView);
 

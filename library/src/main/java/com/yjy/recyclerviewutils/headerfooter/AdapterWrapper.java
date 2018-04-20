@@ -1,12 +1,12 @@
 package com.yjy.recyclerviewutils.headerfooter;
 
+import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.ViewGroup;
 
-public class AdapterWrapper extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class AdapterWrapper<H extends ViewDataBinding, F extends ViewDataBinding> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int VIEW_TYPE_HEADER = Integer.MAX_VALUE;
 
@@ -14,9 +14,14 @@ public class AdapterWrapper extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private RecyclerView.Adapter mContent;
 
-    private View mHeaderView = null;
+    private ViewCreator<H> mHeaderView;
 
-    private View mFooterView = null;
+    private ViewCreator<F> mFooterView;
+
+//    private View mHeaderView = null;
+//
+//    private View mFooterView = null;
+
 
     public AdapterWrapper(RecyclerView.Adapter container) {
         mContent = container;
@@ -81,9 +86,9 @@ public class AdapterWrapper extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_HEADER:
-                return new ViewHolder(mHeaderView);
+                return new ViewHolder(mHeaderView.onCreateDataBinding(parent));
             case VIEW_TYPE_FOOTER:
-                return new ViewHolder(mFooterView);
+                return new ViewHolder(mFooterView.onCreateDataBinding(parent));
             default:
                 return mContent.onCreateViewHolder(parent, viewType);
         }
@@ -93,9 +98,11 @@ public class AdapterWrapper extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (hasHeaderView() && position == 0) {
-
+            ViewHolder viewHolder = (ViewHolder) holder;
+            mHeaderView.onBindData((H) viewHolder.mViewDataBinding);
         } else if (hasFooterView() && position == getItemCount() - 1) {
-
+            ViewHolder viewHolder = (ViewHolder) holder;
+            mFooterView.onBindData((F) viewHolder.mViewDataBinding);
         } else {
             mContent.onBindViewHolder(holder, getContentPosition(position));
         }
@@ -129,17 +136,20 @@ public class AdapterWrapper extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return itemCount;
     }
 
-    public void setHeaderView(View headerView) {
+    public void setHeaderView(ViewCreator<H> headerView) {
         mHeaderView = headerView;
     }
 
-    public void setFooterView(View footerView) {
+    public void setFooterView(ViewCreator<F> footerView) {
         mFooterView = footerView;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
-        ViewHolder(View itemView) {
-            super(itemView);
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        ViewDataBinding mViewDataBinding;
+        ViewHolder(ViewDataBinding viewDataBinding) {
+            super(viewDataBinding.getRoot());
+            mViewDataBinding = viewDataBinding;
         }
     }
+
 }

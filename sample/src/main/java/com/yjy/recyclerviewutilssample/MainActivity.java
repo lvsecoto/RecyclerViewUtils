@@ -7,9 +7,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
+import com.yjy.recyclerviewutils.headerfooter.ViewCreator;
 import com.yjy.recyclerviewutilssample.databinding.ActivityMainBinding;
+import com.yjy.recyclerviewutilssample.databinding.ViewFooterBinding;
+import com.yjy.recyclerviewutilssample.databinding.ViewHeaderBinding;
 
 import java.util.ArrayList;
 
@@ -63,12 +67,36 @@ public class MainActivity extends AppCompatActivity {
             mFragments.add(rf);
         }
 
-        private View newFooterView() {
-            return View.inflate(getBaseContext(), R.layout.view_footer, null);
+        private ViewCreator<ViewFooterBinding> newFooterView() {
+            return new ViewCreator<ViewFooterBinding>(){
+
+                @Override
+                public ViewFooterBinding onCreateDataBinding(ViewGroup parent) {
+                    return DataBindingUtil.inflate(
+                            LayoutInflater.from(parent.getContext()), R.layout.view_footer, parent,false);
+                }
+
+                @Override
+                public void onBindData(ViewFooterBinding dataBinding) {
+
+                }
+            };
         }
 
-        private View newHeaderView() {
-            return View.inflate(getBaseContext(), R.layout.view_header, null);
+        private ViewCreator<ViewHeaderBinding> newHeaderView() {
+            return new ViewCreator<ViewHeaderBinding>(){
+
+                @Override
+                public ViewHeaderBinding onCreateDataBinding(ViewGroup parent) {
+                    return DataBindingUtil.inflate(
+                            LayoutInflater.from(parent.getContext()), R.layout.view_header, parent,false);
+                }
+
+                @Override
+                public void onBindData(ViewHeaderBinding dataBinding) {
+
+                }
+            };
         }
 
         RecyclerViewFragmentAdapter() {
