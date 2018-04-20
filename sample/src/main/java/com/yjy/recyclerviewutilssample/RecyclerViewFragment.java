@@ -5,15 +5,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.yjy.recyclerviewutilssample.databinding.FragmentRecyclerViewBinding;
+import com.yjy.recyclerviewutils.adapter.SimpleAdapter;
 import com.yjy.recyclerviewutils.headerfooter.HeaderFooterDecorator;
+import com.yjy.recyclerviewutilssample.databinding.FragmentRecyclerViewBinding;
+import com.yjy.recyclerviewutilssample.databinding.ViewItemBinding;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -26,7 +26,8 @@ public class RecyclerViewFragment extends Fragment {
 
     private RecyclerView.LayoutManager mLayoutManager = null;
 
-    private SampleAdapter mAdapter;
+    private SimpleAdapter<String, ViewItemBinding> mAdapter;
+
     private ArrayList<String> mStrings = new ArrayList<>();
 
     @Nullable
@@ -38,17 +39,27 @@ public class RecyclerViewFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mStrings.add(UUID.randomUUID().toString());
-                mAdapter.replace(mStrings);
+                mAdapter.replace(new ArrayList<>(mStrings));
             }
         });
+        mAdapter = new SimpleAdapter<String, ViewItemBinding>() {
 
-        mAdapter = new SampleAdapter(getContext(), new SampleAdapter.OnClickListener() {
+            @Override
+            protected ViewItemBinding onCreateDataBinding(ViewGroup parent) {
+                return DataBindingUtil.inflate(getLayoutInflater(), R.layout.view_item, parent, false);
+            }
+
+            @Override
+            protected void onBindData(ViewItemBinding binding, String item) {
+                binding.setMessage(item);
+            }
+        };
+        mAdapter.setOnClickListener(new SimpleAdapter.OnClickListener<String>() {
             @Override
             public void onClickItem(String item) {
-                mStrings.remove(item);
-                Toast.makeText(getContext(),item, Toast.LENGTH_LONG).show();
-
-                mAdapter.replace(mStrings);
+                if (mStrings.remove(item)) {
+                    mAdapter.replace(new ArrayList<>(mStrings));
+                }
             }
         });
 
@@ -58,8 +69,6 @@ public class RecyclerViewFragment extends Fragment {
                 .setHeaderView(mHeaderView)
                 .setFooterView(mFooterView)
                 .decorate(binding.list);
-
-        binding.list.setItemAnimator(new DefaultItemAnimator());
 
         return binding.getRoot();
     }
