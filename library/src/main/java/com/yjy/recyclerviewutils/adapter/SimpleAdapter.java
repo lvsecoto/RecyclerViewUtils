@@ -1,5 +1,6 @@
 package com.yjy.recyclerviewutils.adapter;
 
+import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.AsyncTask;
 import android.support.annotation.MainThread;
@@ -7,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -29,9 +31,13 @@ public abstract class SimpleAdapter<T, V extends ViewDataBinding> extends Recycl
     private int mVersion;
 
     /**
-     * To create an item view dataBinding
+     * To get this position layout id
+     * <p>
+     * <p></p>
+     * <p>This layout id is use for creating a data binding.
+     * And it will be assigned to item view type</p>
      */
-    protected abstract V onCreateDataBinding(ViewGroup parent);
+    protected abstract int getLayoutId(int position);
 
     /**
      * To bind data to dataBinding
@@ -52,7 +58,8 @@ public abstract class SimpleAdapter<T, V extends ViewDataBinding> extends Recycl
     @NonNull
     @Override
     public ViewHolder<V> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        V dataBinding = onCreateDataBinding(parent);
+        V dataBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
+                viewType, parent, false);
         return new ViewHolder<>(dataBinding);
     }
 
@@ -73,6 +80,11 @@ public abstract class SimpleAdapter<T, V extends ViewDataBinding> extends Recycl
 
         // update immediate, to prevent the view flashing
         holder.mBinding.executePendingBindings();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return getLayoutId(position);
     }
 
     @Override
@@ -110,7 +122,9 @@ public abstract class SimpleAdapter<T, V extends ViewDataBinding> extends Recycl
         private int mStartVersion;
 
         @MainThread
-        CalculateDiffAsyncTask(ArrayList<T> oldItems, ArrayList<T> newItems, SimpleAdapter simpleAdapter) {
+        CalculateDiffAsyncTask(ArrayList<T> oldItems,
+                               ArrayList<T> newItems,
+                               SimpleAdapter simpleAdapter) {
             mOldItems = oldItems;
             mNewItems = newItems;
             mListAdapterWeakReference = new WeakReference<>(simpleAdapter);

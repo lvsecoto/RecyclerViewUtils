@@ -48,8 +48,8 @@ public class RecyclerViewFragment extends Fragment {
         mAdapter = new SimpleAdapter<String, ViewItemBinding>() {
 
             @Override
-            protected ViewItemBinding onCreateDataBinding(ViewGroup parent) {
-                return DataBindingUtil.inflate(getLayoutInflater(), R.layout.view_item, parent, false);
+            protected int getLayoutId(int position) {
+                return R.layout.view_item;
             }
 
             @Override
